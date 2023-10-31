@@ -36,7 +36,7 @@ function Login({users}) {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post(`${BASE_URL}api/users/login`, 
+        axios.post(`${BASE_URL}/api/users/login`, 
         {
           email: `${email}`, 
           password: `${pass}`

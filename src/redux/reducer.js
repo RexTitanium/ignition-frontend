@@ -38,7 +38,7 @@ const reducer = (state = initialState, action) => {
       }
 
     case ActionTypes.CHANGE_PASSWORD:
-      axios.get(`${BASE_URL}/api/users/update/password`, 
+      axios.post(`${BASE_URL}/api/users/update/password`, 
         {
           email: `${action.payload.email}`, 
           password: `${action.payload.pass}`
