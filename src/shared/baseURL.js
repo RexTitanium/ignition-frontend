@@ -1,1 +1,1 @@
-export const BASE_URL = "https://ignitionbackendhosted.onrender.com"
+export default const BASE_URL = "https://ignitionbackendhosted.onrender.com"
