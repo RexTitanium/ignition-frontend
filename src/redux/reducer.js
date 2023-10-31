@@ -3,6 +3,7 @@ import * as ActionTypes from './ActionTypes'
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { getDefaultNormalizer } from '@testing-library/react'
 import axios from 'axios';
+import BASE_URL from '../shared/baseURL'
 
 //TODO : Add environment variables
 //process.env.BACKEND_URI
@@ -15,7 +16,7 @@ const initialState = {
 const reducer = (state = initialState, action) => { 
   switch (action.type) {
     case ActionTypes.REGISTER:
-      axios.post('http://localhost:8080/api/users/register', 
+      axios.post(`${BASE_URL}/api/users/register`, 
         {
           email: `${action.payload.email}`, 
           password: `${action.payload.pass}`,
@@ -37,7 +38,7 @@ const reducer = (state = initialState, action) => {
       }
 
     case ActionTypes.CHANGE_PASSWORD:
-      axios.get('http://localhost:8080/api/users/update/password', 
+      axios.get(`${BASE_URL}/api/users/update/password`, 
         {
           email: `${action.payload.email}`, 
           password: `${action.payload.pass}`

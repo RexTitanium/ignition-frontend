@@ -7,6 +7,8 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
 import ThemeContext from '../context/ThemeContext';
 import axios from 'axios';
+import BASE_URL from '../shared/baseURL'
+
 
 function Login({users}) {
     const [errorMessages, setErrorMessages] = useState({});
@@ -34,7 +36,7 @@ function Login({users}) {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post('http://localhost:8080/api/users/login', 
+        axios.post(`${BASE_URL}api/users/login`, 
         {
           email: `${email}`, 
           password: `${pass}`
