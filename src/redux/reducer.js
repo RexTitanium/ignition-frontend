@@ -20,6 +20,8 @@ const reducer = (state = initialState, action) => {
         {
           email: `${action.payload.email}`, 
           password: `${action.payload.pass}`,
+          fname: `${action.payload.fname}`,
+          lname: `${action.payload.lname}`,
           type: "unapproved"
         }).then((response) => {
           console.log(response);
