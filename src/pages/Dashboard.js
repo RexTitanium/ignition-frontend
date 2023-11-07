@@ -9,9 +9,12 @@ import format from 'date-fns/format'
 import parse from 'date-fns/parse'
 import startOfWeek from 'date-fns/startOfWeek'
 import getDay from 'date-fns/getDay'
+import DatePicker from 'react-datepicker'
 import NotifBox from './NotifBox'
+import BASE_URL from '../shared/baseURL'
+import axios from 'axios'
 
-function Dashboard({user,graduateDegreeData}) {
+function Dashboard({user,graduateDegreeData,setCourseData}) {
   let events=[]
   const navigate = useNavigate()
   for(let i = 0; i<17; i++){
@@ -52,10 +55,54 @@ function Dashboard({user,graduateDegreeData}) {
       end: new Date(2023,7,23+7*i,19,45,0,0)
     })
   }
+/*   useEffect(() => {
+    courseData()
+  }, [])
   
-  console.log(events)
+  const courseData = async () =>
+  {
+    const data = [];
+    const endpoint = `${BASE_URL}/courses/courseInfo/` + user?.email;
+    const response = await axios.get(endpoint);
+    for(const i of (response.data.arr))
+    {
+      const classCode = i.classCode;
+      const className = i.className;
+      const percentage = i.percentage;
+      const professorName = i.fname + ' ' + i.lname;
+      let letterGrade = 'F';
+      if(percentage >= 97)
+        letterGrade = 'A+'
+      else if(percentage > 93)
+        letterGrade = 'A';
+      else if(percentage > 90)
+        letterGrade = 'A-';
+      else if(percentage > 87)
+        letterGrade = 'B+';
+      else if(percentage > 83)
+        letterGrade = 'B';
+      else if(percentage > 80)
+        letterGrade = 'B-';
+      else if(percentage > 77)
+        letterGrade = 'C+';
+      else if(percentage > 73)
+        letterGrade = 'C';
+      else if(percentage > 70)
+        letterGrade = 'C-';
+      else if(percentage > 67)
+        letterGrade = 'D+';
+      else if(percentage > 65)
+        letterGrade = 'D';
+  
+      data.push({subjectID: classCode, subjectName: className, semester: 'Fall 2023', percentage: percentage, professorName: professorName, letterGrade: letterGrade});
+    }
+  
+    setCourseData(courseData, data)
+  } */
 
-  
+
+
+
   const locales = {
     "en-US": require("date-fns/locale/en-US")
   }

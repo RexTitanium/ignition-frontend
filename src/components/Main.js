@@ -11,6 +11,7 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import Navbar from './Navbar'
 import axios from 'axios'
+import BASE_URL from '../shared/baseURL'
 
 function Main() {
 const {theme, setTheme} =useContext(ThemeContext)
@@ -24,50 +25,8 @@ const [courseDate, setCourseData] = useState([]);
 // const loggedInUser= useSelector(state => state.loggedInUser)
 const loggedInUser = useSelector(state => state.loggedInUser)
 
-useEffect(() => {
-  courseData()
-}, [])
 
-const courseData = async () =>
-{
-  const data = [];
-  const endpoint = 'http://localhost:8080/courses/courseInfo/' + loggedInUser.email;
-  const response = await axios.get(endpoint);
-  for(const i of (response.data.arr))
-  {
-    const classCode = i.classCode;
-    const className = i.className;
-    const percentage = i.percentage;
-    const professorName = i.fname + ' ' + i.lname;
-    let letterGrade = 'F';
-    if(percentage >= 97)
-      letterGrade = 'A+'
-    else if(percentage > 93)
-      letterGrade = 'A';
-    else if(percentage > 90)
-      letterGrade = 'A-';
-    else if(percentage > 87)
-      letterGrade = 'B+';
-    else if(percentage > 83)
-      letterGrade = 'B';
-    else if(percentage > 80)
-      letterGrade = 'B-';
-    else if(percentage > 77)
-      letterGrade = 'C+';
-    else if(percentage > 73)
-      letterGrade = 'C';
-    else if(percentage > 70)
-      letterGrade = 'C-';
-    else if(percentage > 67)
-      letterGrade = 'D+';
-    else if(percentage > 65)
-      letterGrade = 'D';
 
-    data.push({subjectID: classCode, subjectName: className, semester: 'Fall 2023', percentage: percentage, professorName: professorName, letterGrade: letterGrade});
-  }
-
-  setCourseData(courseData, data)
-}
 
 // const graduateDegreeData = [
 //   { subjectID: 'CSCI B-505', subjectName: 'Advanced Computer Science', semester: 'Fall 2023', percentage: 92.5, professorName: 'Dr. Smith', letterGrade: 'A-minus' },
@@ -99,7 +58,7 @@ return (
         <Route path = '/' element={<LandingPage />}/>
         <Route path ='/login' element={<LoginPage users={users} />} /> 
         <Route element={<PrivateRoute user={loggedInUser}/>}>
-          <Route exact path="/dashboard" element={<Dashboard user={loggedInUser} graduateDegreeData={courseDate}/>}/>
+          <Route exact path="/dashboard" element={<Dashboard user={loggedInUser} graduateDegreeData={courseDate} setCourseData = {setCourseData}/>}/>
           <Route
                 path="/dashboard/:cardId" 
                 element={<CardId />}/>
