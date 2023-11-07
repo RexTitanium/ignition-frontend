@@ -20,19 +20,12 @@ document.body.style.backgroundColor = theme === 'light' ? "#fff" : "#000";
 document.body.style.transition = "all 300ms ease";
 const users = useSelector(state => state.users)
 
-const [courseDate, setCourseData] = useState([]);
-
-// const loggedInUser= useSelector(state => state.loggedInUser)
+const [courseData, setCourseData] = useState([
+  { subjectID: 'CSCI B-505', subjectName: 'Advanced Computer Science', semester: 'Fall 2023', percentage: 92.5, professorName: 'Dr. Smith', letterGrade: 'A-minus' },
+  { subjectID: 'CSCI B-551', subjectName: 'Artificial Intelligence', semester: 'Fall 2023', percentage: 89.7, professorName: 'Dr. Williams', letterGrade: 'B-plus' },
+  { subjectID: 'CSCI P-506', subjectName: 'Advanced Statistics', semester: 'Fall 2023', percentage: 55.7, professorName: 'Dr. Evans', letterGrade: 'F' }
+]);
 const loggedInUser = useSelector(state => state.loggedInUser)
-
-
-
-
-// const graduateDegreeData = [
-//   { subjectID: 'CSCI B-505', subjectName: 'Advanced Computer Science', semester: 'Fall 2023', percentage: 92.5, professorName: 'Dr. Smith', letterGrade: 'A-minus' },
-//   { subjectID: 'CSCI B-551', subjectName: 'Artificial Intelligence', semester: 'Fall 2023', percentage: 89.7, professorName: 'Dr. Williams', letterGrade: 'B-plus' },
-//   { subjectID: 'CSCI P-506', subjectName: 'Advanced Statistics', semester: 'Fall 2023', percentage: 55.7, professorName: 'Dr. Evans', letterGrade: 'F' },
-// ];
 
 const CardId = () => {
   let params = useParams()
@@ -40,8 +33,8 @@ const CardId = () => {
   return (
     <IndCard
       card={
-        courseDate &&
-        courseDate.filter(
+        courseData &&
+        courseData.filter(
           (subject) => subject.subjectID === params.cardId
         )[0]
       }
@@ -58,7 +51,7 @@ return (
         <Route path = '/' element={<LandingPage />}/>
         <Route path ='/login' element={<LoginPage users={users} />} /> 
         <Route element={<PrivateRoute user={loggedInUser}/>}>
-          <Route exact path="/dashboard" element={<Dashboard user={loggedInUser} graduateDegreeData={courseDate} setCourseData = {setCourseData}/>}/>
+          <Route exact path="/dashboard" element={<Dashboard user={loggedInUser} graduateDegreeData={courseData} setCourseData = {setCourseData}/>}/>
           <Route
                 path="/dashboard/:cardId" 
                 element={<CardId />}/>
