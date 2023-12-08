@@ -1,7 +1,6 @@
 import React, {useContext, useState} from 'react'
 import { useDispatch } from 'react-redux';
 import ThemeContext from '../context/ThemeContext'
-import axios from 'axios';
 function EnterPassword({user}) {
   const [newPass, setNewPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
@@ -12,20 +11,23 @@ function EnterPassword({user}) {
     dispatch({
         type: 'CHANGE_PASSWORD',
         payload: {
-            id: user.email,
+            email: user.email,
             pass: newPass
         }
     })
 }
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = (e) => {
+    e.preventDefault()
     if (newPass === confirmPass){
       if (newPass === user.pass){
         alert('Enter a new password')
-      } else {
+      } 
+      else {
         register();
       }
-    }else {
+    }
+    else {
       alert('Passwords do not match')
     }
   }

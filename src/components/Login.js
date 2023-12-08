@@ -7,8 +7,14 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
 import ThemeContext from '../context/ThemeContext';
 import axios from 'axios';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
+import BASE_URL from '../shared/baseURL';
+import { GoogleLogin} from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
-function Login({users}) {
+function Login({setLoggedInUser}) {
+    const [togglePass, setTogglePass] = useState(false);
     const [errorMessages, setErrorMessages] = useState({});
     const [email,setEmail] = useState("");
     const [pass,setPass] = useState("");
@@ -33,19 +39,22 @@ function Login({users}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        axios.post('http://localhost:8080/api/users/login', 
+        axios.post(`${BASE_URL}/api/users/login`, 
         {
-          email: `${email}`, 
-          password: `${pass}`
+          email: email, 
+          password: pass
         }).then((response) => {
             setErrorMessages({});
-            const payload = response.data.user;
+            const data = response.data.user;
+            const payload = {email:data.email,fname:data.fname,lname:data.lname,type:data.type}
             dispatch({
                 type: 'LOGIN',
                 payload
             })
-            alert('Success!!!')
+            alert('Success')
+            setLoggedInUser(payload)
+            localStorage.setItem('jsonwebtoken',JSON.stringify(payload))
+            navigate(payload?.type === 'Admin'?'/admindashboard':'/dashboard')
         }, (error) => {
             if(error.response.data.message === "Invalid Password")
             {
@@ -63,19 +72,44 @@ function Login({users}) {
         });
     };
 
-    
-
     const handlePasswordReset = ()=>{
         setResetPassword(true);
     }
     
-    const handleGoogleOAuth = () => {
-        window.open(
-            'http://localhost:8080/auth/google/callback',
-            "self"
-        );
+    const handleGoogleOAuth = (data) => {
+        axios.post(`${BASE_URL}/api/users/login`, 
+        {
+          email: data.email, 
+          password: 'GooglePassword'
+        }).then((response) => {
+            setErrorMessages({});
+            const data = response.data.user;
+            const payload = {email:data.email, fname:data.given_name, lname:data.family_name, type:'Unapproved'}
+            console.log('frontEmail', data.email);
+            dispatch({
+                type: 'LOGIN',
+                payload
+            })
+            alert('Success')
+            setLoggedInUser(payload)
+            localStorage.setItem('jsonwebtoken',JSON.stringify(payload))
+            navigate(payload?.type === 'Admin'?'/admindashboard':'/dashboard')
+        }, (error) => {
+            if(error.response.data.message === "Invalid Password")
+            {
+                setErrorMessages({ name: "pass", message: error.response.data.message });
+            }
+            else if(error.response.data.message === "Email Not Found")
+            {
+                setErrorMessages({ name: "email", message: error.response.data.message });
+            }
+            else
+            {
+                setErrorMessages({});
+                console.log(error);
+            }
+        });
     }
-    
 
     return (
         <div>
@@ -83,7 +117,7 @@ function Login({users}) {
             <ResetPassword setResetPassword={setResetPassword} theme={theme}/>
             : 
             <div className="form-wrapper">
-            <form className='form'>
+            <form className='form' onSubmit={handleSubmit}>
                 <div className="input-container">
                     <label>Email </label>
                     <input type="email" name="email" value={email} required onChange={(e)=>setEmail(e.target.value)}/>
@@ -91,14 +125,26 @@ function Login({users}) {
                 </div>
                 <div className="input-container">
                     <label>Password </label>
-                    <input type="password" name="pass" value={pass} onChange = {(e)=>setPass(e.target.value)} required/>
+                    <div className='password-bar'>
+                        <input type={togglePass?'text':'password'} name="pass" value={pass} onChange = {(e)=>setPass(e.target.value)} required/>
+                        <div className={`show-pass-${theme}`} onClick={() => setTogglePass(!togglePass)}>{togglePass?<VisibilityOffRoundedIcon/>:<VisibilityRoundedIcon/>}</div>
+                    </div>
                     {renderErrorMessage("pass")}
                 </div>
-            </form>
-            <div className='button-container'>
-                    <button className= "btn-red" onClick={handleSubmit}>Log In</button>
-                    <button  className={`google-login ${theme === 'light'?"btn-black" : "btn-white"}`} onClick={handleGoogleOAuth}><GoogleIcon /> Sign in With Google</button>
+                <div className='button-container'>
+                    <button className= "btn-red" type='submit'>Log In</button>
+                    <GoogleLogin
+                        theme={theme === 'light' ? 'outline':'filled_black'}
+                        onSuccess={response => {
+                            var userObject = jwtDecode(response.credential);
+                            handleGoogleOAuth(userObject);
+                        }}
+                        onError={() => {
+                            console.log('Login Failed!');
+                        }}
+                    />
                 </div>
+            </form>
             <div className='reset-password-container'>
                     <button className='reset-password-btn' onClick={handlePasswordReset}>
                         <LoopRoundedIcon style ={{color: "#FF472F"}}/>Reset Password

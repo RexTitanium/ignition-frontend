@@ -4,6 +4,7 @@ import EnterPassword from './EnterPassword'
 import { useSelector } from 'react-redux';
 import './styles/resetPass.css'
 import ThemeContext from '../context/ThemeContext';
+import BASE_URL from '../shared/baseURL';
 import axios from 'axios';
 
 function ResetPassword({setResetPassword}) {
@@ -27,7 +28,7 @@ function ResetPassword({setResetPassword}) {
     setSentOtp(OTP);
     setProfile(user)
 
-    axios.post('http://localhost:8080/api/email/otp', 
+    axios.post(`${BASE_URL}/api/email/otp`, 
     {
       email: `${email}`,
       otp: `${OTP}`
@@ -44,7 +45,7 @@ function ResetPassword({setResetPassword}) {
   }
 
   const handleReset =() => {
-    axios.post('http://localhost:8080/api/users/find', 
+    axios.post(`${BASE_URL}/api/users/find`, 
         {
           email: `${email}`
         }).then((response) => {

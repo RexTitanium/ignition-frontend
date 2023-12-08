@@ -1,0 +1,19 @@
+.enrollment-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+}
+
+.enrollment-wrapper {
+    background-color: #eeeeee;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.enrollment-heading {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}

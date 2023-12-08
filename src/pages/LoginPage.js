@@ -5,7 +5,7 @@ import ThemeContext from '../context/ThemeContext';
 import LoginFormContext from '../context/Login-Form-Context';
 import Loading from '../components/Loading';
 
-function LoginPage({users}) {
+function LoginPage({users,setLoggedInUser}) {
     const {formType, setFormType} = useContext(LoginFormContext);
     const {theme} = useContext(ThemeContext)
     const [isLoading, setLoading] = useState(true) 
@@ -36,7 +36,7 @@ function LoginPage({users}) {
                 </div>
                 <div className={`login-form login-form-${theme}`}>
                     <div className='form-type'>
-                        {formType === "sign-in" ? <Login users={users}/> : <Register users={users}/>}
+                        {formType === "sign-in" ? <Login setLoggedInUser={setLoggedInUser}/> : <Register users={users}/>}
                     </div>
                 </div>
             </div>}

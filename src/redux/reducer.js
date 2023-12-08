@@ -3,9 +3,7 @@ import * as ActionTypes from './ActionTypes'
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { getDefaultNormalizer } from '@testing-library/react'
 import axios from 'axios';
-
-//TODO : Add environment variables
-//process.env.BACKEND_URI
+import BASE_URL from '../shared/baseURL';
 
 const initialState = {
   users: [],
@@ -15,18 +13,24 @@ const initialState = {
 const reducer = (state = initialState, action) => { 
   switch (action.type) {
     case ActionTypes.REGISTER:
-      axios.post('http://localhost:8080/api/users/register', 
+      console.log(action.payload.email);
+      axios.post(`${BASE_URL}/api/users/register`, 
         {
           email: `${action.payload.email}`, 
           password: `${action.payload.pass}`,
           fname: `${action.payload.fname}`,
           lname: `${action.payload.lname}`,
-          type: "unapproved"
+          type: "Unapproved"
         }).then((response) => {
           console.log(response);
         }, (error) => {
           console.log(error);
         });
+
+        axios
+        .post(`${BASE_URL}/chat/register`, { email:action.payload.email, first_name:action.payload.fname, last_name:action.payload.lname })
+        .then((r) => console.log(r)) 
+        .catch((e) => console.log(JSON.stringify(e.response.data)));
       return {
         ...state,
         users: [...state.users, action.payload],
@@ -39,19 +43,21 @@ const reducer = (state = initialState, action) => {
       }
 
     case ActionTypes.CHANGE_PASSWORD:
-      axios.patch('http://localhost:8080/api/users/update/password', 
-      {
-        email: `${action.payload.id}`, 
-        password: `${action.payload.pass}`,
-      }).then((response) => {
-        console.log(response);
-      }, (error) => {
-        console.log(error);
-      });
+      console.log(action.payload);
+      axios.patch(`${BASE_URL}/api/users/update/password`, 
+        {
+          email: `${action.payload.email}`, 
+          password: `${action.payload.pass}`
+        }).then((response) => {
+          console.log(response);
+        }, (error) => {
+          console.log(error);
+        });
       return {
         ...state,
         loggedInUser: action.payload,
       }
+
     default:
       return state;
   }

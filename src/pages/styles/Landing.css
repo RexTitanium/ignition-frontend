@@ -1,5 +1,4 @@
 .index {
-  background-color: #ffffff;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -7,7 +6,6 @@
 }
 
 .index .div {
-  background-color: #ffffff;
   border: 1px none;
   height: 1443px;
   position: relative;
@@ -26,7 +24,6 @@
 
 
 .index .text-wrapper {
-  color: #ffffff;
   font-family: "Inter", Helvetica;
   font-size: 24px;
   font-weight: 400;
@@ -77,17 +74,13 @@
   left: 122px;
   position: absolute;
   top: 159px;
-  width: 1259px;
 }
 
 .index .log-in-wrapper {
-  background-color: #5e0000;
   border-radius: 20px;
-  height: 89px;
   left: 0;
   position: absolute;
   top: 550px;
-  width: 204px;
 }
 
 .index .log-in {
@@ -236,4 +229,18 @@
   line-height: normal;
   text-align: center; /* Adjust the text alignment as needed */
   margin-top: 20px; /* Add margin-top for spacing */
+}
+
+
+.log-in-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+
+.sign-up-link {
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
 }

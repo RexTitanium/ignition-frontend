@@ -2,7 +2,8 @@ import React, {useContext, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import Google from '@mui/icons-material/Google';
 import ThemeContext from '../context/ThemeContext';
-import axios from 'axios';
+import { GoogleLogin} from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 function Register({users}) {
     const [errorMessages, setErrorMessages] = useState({});
@@ -45,40 +46,44 @@ function Register({users}) {
         setErrorMessages({});
     }
 
-    const handleGoogleOAuth = () => {
-        console.log("sign up with google")
+    const handleGoogleOAuth = (data) => {
+        console.log('DATA IS HERE', data);
+        setFname(`${data.given_name}`);
+        setLname(`${data.family_name}`);
+        setEmail(`${data.email}`);
+        setPass('GooglePassword');
+        setRepass('GooglePassword');
+        dispatch({
+            type: 'REGISTER',
+            payload: {
+                id: (new Date).getTime(),
+                fname:`${data.given_name}`,lname:`${data.family_name}`,email:`${data.email}`,pass:'GooglePassword'
+            }
+        })
     }
 
     const handleRegistration = (e) =>{
         e.preventDefault();
-
-        axios.post('http://localhost:8080/api/users/find', 
-        {
-          email: `${email}`
-        }).then((response) => {
-            setErrorMessages({name:"already_registered", message: errors.already_registered});
-        }, (error) => {
-            if(error.response.status == 401)
-            {
-                if (!(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email))){
-                    setErrorMessages({name:"email", message:errors.email})
+        const payload = users.find((user) => user.email === email)
+        console.log(payload)
+        console.log('EMAIL: ', email);
+        if (!(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email))){
+            setErrorMessages({name:"email", message:errors.email})
+        }
+        else {
+            if (pass === repass){
+                if(payload){
+                    setErrorMessages({name:"already_registered", message: errors.already_registered})
                 }
-                else if(pass === repass)
-                {
-                    register();
-                    console.warn("Registered")
-                    clear_inputs();
-                }
-                else
-                {
-                    setErrorMessages({name:"passMatch", message: errors.passMatch});
-                }
+                else {
+                register();
+                console.warn("Registered")
+                clear_inputs();}
             }
-            else
-            {
-                console.log(error);
+            else{
+            setErrorMessages({name:"passMatch", message: errors.passMatch});
             }
-        });
+        }
     };
 
   return (
@@ -115,12 +120,20 @@ function Register({users}) {
                 <input type="password" name="repass" required value={repass} onChange = {(e)=>setRepass(e.target.value)}/>
                 {renderErrorMessage("passMatch")}
             </div>
+            <div className="button-container">
+                <button className="btn-red" type="submit">Sign Up</button>
+                <GoogleLogin
+                        onSuccess={response => {
+                            var userObject = jwtDecode(response.credential);
+                            handleGoogleOAuth(userObject)
+                        }}
+                        onError={() => {
+                            console.log('Login Failed!');
+                        }}
+                />
+            </div>
         </form>
         {renderErrorMessage("already_registered")}
-        <div className="button-container">
-            <button className="btn-red" onClick={handleRegistration}>Sign Up</button>
-            <button  className={`${theme === 'light' ? 'btn-black' : 'btn-white'} google-login`} onClick={handleGoogleOAuth}><Google /> Sign up With Google</button>
-        </div>
     </div>
   )
 }

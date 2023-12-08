@@ -61,6 +61,7 @@ const LandingPage = () => {
           <div className="overlap">
           <div className="log-in-wrapper">
               <Button
+              className="btn-login"
                 variant="contained"
                 color="primary"
                 onClick={handleLogin}
@@ -74,8 +75,8 @@ const LandingPage = () => {
                 >
                 Log In
               </Button>
-              <div>
-                Want to Sign Up? <a onClick={handleRegister}>Sign UP</a>
+              <div className="sign-up-link">
+                Want to Sign Up? <a href="#" onClick={handleRegister}>Sign UP</a>
               </div>
             </div>
             <div className="overlap-2">
