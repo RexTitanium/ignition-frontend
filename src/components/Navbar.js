@@ -5,7 +5,6 @@ import ThemeContext from '../context/ThemeContext';
 import './styles/navbar.css'
 import { useNavigate } from 'react-router-dom';
 import { Avatar } from '@mui/material';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { Modal } from 'react-bootstrap';
 import BASE_URL from '../shared/baseURL';
 import axios from 'axios';
@@ -62,7 +61,6 @@ function Navbar({loggedInUser,setLoggedInUser}) {
       setLoggedInUser()
     }
     const [newCourse, setNewCourse] = useState({
-      courseCode:'',
       courseName:'',
       instructorEmail:loggedInUser?.email,
       status:'Unapproved',
@@ -79,10 +77,14 @@ function changeTheme(){
 
 const handleSubmit = async() => {
   setLoading(true)
-  let code = subCode+' '+charCode+'-'+courseNumber
-  setNewCourse({...newCourse,courseCode: code})
-  console.log(newCourse)
-  await axios.post(`${BASE_URL}/course/createCourse`,newCourse
+  const code = subCode+' '+charCode+'-'+courseNumber
+  await axios.post(`${BASE_URL}/course/createCourse`,{
+    courseCode: code,
+    courseName: newCourse.courseName,
+    instructorEmail:newCourse.instructorEmail,
+    status:newCourse.status,
+    description:newCourse.description
+  }
   ).then((res)=> {
     console.log(res)
     setLoading(false)
@@ -104,105 +106,41 @@ const handleEnroll =() => {
   setEnroll(enroll === 'Enroll'?'Dashboard':'Enroll')
 }
 
-const [originalCourses, setOriginalCourses] = useState([])
-useEffect(() => {
-  const elem = document.getElementById("mainList")
-  let childs = Array(document.getElementById("mainList").children)
-  // let childs = []
-  // for(let i = 0; i < )
-  console.log(childs);
-  setOriginalCourses(childs[0])
-}, [])
-
-function checkUrl ()
-{
-  const curUrl = window.location.pathname
-  console.log(curUrl)
-  if(curUrl === "/")
-  {
-    console.log("heejkhnsjkdhnfsjkdfnksjdnfjkn")  
-    return false
-  }
-  return true
-}
-function removeAllChildNodes(parent) {
-  while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
-  }
-}
-// Original Author: Pranav Mandke
-function handleClick(val)
-{
-  const elem = document.getElementById("mainList")
-  console.log(originalCourses);
-  // const newElem = document.createElement("div")
-  let childs = []
-  // childs = originalCourses.filter((elem)=>{
-  //   return (elem.outerHTML).toLowerCase().includes(val.toLowerCase());
-
-  // })
-  for(let i = 0; i < originalCourses.length; i++)
-  {
-    if((originalCourses[i].outerHTML).toLowerCase().includes(val.toLowerCase()))
-    {
-      originalCourses[i].style.display = ""
-      childs.push(originalCourses[i])
-    }
-    else
-    {
-      originalCourses[i].style.display = "none"
-      childs.push(originalCourses[i])
-    }
-  }
-  console.log(childs,originalCourses);
-  removeAllChildNodes(document.getElementById("mainList"))
-  childs.map((elem)=>{
-    document.getElementById("mainList").appendChild(elem)
-    return true
-  })
-  
-}
   return (
-    <>
-    {checkUrl()==true?
-      <>
     <div className='navbar-container'>
       {loggedInUser?.type === 'Instructor' ? 
       <div className='create-assignment'>
         <button className={`create-btn create-btn-${theme}`} onClick={() => setShowModal(true)}>Create New Course</button>
       </div>
       :
-      <div className='empty-div'></div>}
-      {loggedInUser ? 
-      <div className="search-button">
-        <input placeholder='Search'/>
-      </div> : 
-      <div className='empty-div'></div>}
+      loggedInUser?.type === 'Student'
+      ?
+      <div className='create-assignment'>
+        <button className={`create-btn create-btn-${theme}`} onClick={() => handleEnroll()}>{enroll}</button>
+      </div>:<div className='empty-div'></div>}
       <div className="navbar-buttons">
+        {loggedInUser ? 
+        <>
+        <div><a className={`btn-link-${theme}`} href="#" onClick={logout}>Logout</a></div>
+        <div><a className={`btn-link-${theme}`} href= {`${loggedInUser.type === 'Admin' ? '/admindashboard':'/dashboard'}`}>Dashboard</a></div></>
+        :<></>}
         <div className='theme-btn-wrapper'>
-              <button className={`theme-btn theme-btn-${theme}`} onClick = {() => changeTheme()}>{theme === 'light' ? 
-              <DarkModeOutlinedIcon style={{color: '#ff1b1b', scale: '80%'}}/> : <LightModeOutlinedIcon style={{color: "#ff1b1b", scale: '80%'}}/>
-              }</button>
+          <button className={`theme-btn theme-btn-${theme}`} onClick = {() => changeTheme()}>{theme === 'light' ? 
+          <DarkModeOutlinedIcon style={{color: '#ff1b1b', scale: '80%'}}/> : <LightModeOutlinedIcon style={{color: "#ff1b1b", scale: '80%'}}/>
+          }</button>
+        </div>
+        {loggedInUser?
+          <div className='user-profile'>
+          <div>
+            <Avatar {...stringAvatar(user.fname+" "+user.lname)}/>
           </div>
-          {loggedInUser?
-            <div className='user-profile'>
-            <div className={`profile-dropdown-${theme}`} onClick={() => setShowLinks(!showLinks)}>
-              <Avatar {...stringAvatar(user.fname+" "+user.lname)}/>
-              <KeyboardArrowDownRoundedIcon />
-            </div>
-            {showLinks?
-            <div className={`profile-dropdown-list dropdown-list-${theme}`}>
-              <a href="#" onClick={logout}>Logout</a>
-              <a href='/profile'>Profile</a>
-              <a href= {`${loggedInUser.type === 'Admin' ? '/admindashboard':'/dashboard'}`}>Dashboard</a>
-            </div>:<></>}
-          </div>
-          :<></>}
+        </div>
+        :<></>}
       </div>
       <Modal 
         show={showModal} 
         onHide={()=> setShowModal(false)}
-        size="lg"
+        id={`modal-${theme}`} size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
         >
@@ -248,9 +186,6 @@ function handleClick(val)
           </Modal.Footer>
         </Modal>
     </div>
-    </>
-    :<></>}
-        </>
   )
 }
 

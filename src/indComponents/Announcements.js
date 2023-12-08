@@ -24,7 +24,7 @@ const Announcements = ({courseName,announcements, setAnnouncements}) => {
     <div className={`canvas-content content-${theme}`}>
       <div className={`canvas-header canvas-header-${theme} canvas-assignment-header`}>
         <h1>Announcements</h1>
-        {loggedInUser.type == "Instructor" ? 
+        {loggedInUser.type === "Instructor" ? 
           <div className='create-assignment'>
             <button className={`create-btn create-btn-${theme}`} onClick={() => setShowNewPost(true)}>Post New Announcement</button>
             <AnnouncemnetPoster showNewPost={showNewPost} setShowNewPost={setShowNewPost} newAnnouncement={newAnnouncement} setNewAnnouncement={setNewAnnouncement} user={loggedInUser} courseName={courseName} />
@@ -44,7 +44,6 @@ function PostAnnouncement({courseName,announcements, setAnnouncements, user}) {
   const {theme} = useContext(ThemeContext)
   const [showAnnouncement,setShowAnnouncement] = useState(false)
   const [announcementDetails, setAnnouncementDetails] = useState()
-console.log(announcements)
 
   const handleShowAnnouncement=(announcement)=>{
     setAnnouncementDetails(announcement)
@@ -53,7 +52,7 @@ console.log(announcements)
   return(
     <div className={`canvas-post-wrapper-${theme}`}>
       <div className={`canvas-announcements announcements-${theme}`}>
-        {user.type == 'Student' || user.type == "Instructor" ? 
+        {user.type === 'Student' || user.type === "Instructor" ? 
         announcements && announcements.toReversed().map((announcement)=>{
           let monthToIndex = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
           let date = new Date(announcement.datePosted)
@@ -61,7 +60,7 @@ console.log(announcements)
           let timeString = '('+date.toLocaleTimeString(['en-US'],{hour: '2-digit', minute:'2-digit'})+')'
           return(
             <div onClick={()=>handleShowAnnouncement(announcement)} className={`announcement-wrapper subcard-${theme}`}>
-              <div className="announcement-header">
+              <div className="announcement-header submit-user-info">
                 <div className='announcement-person'>
                   <div className='announcement-name'>{announcement.name}</div>
                   <div className='announcement-email'>{announcement.email}</div>
@@ -70,7 +69,7 @@ console.log(announcements)
                   {dateString+' '+timeString}
                 </div>
               </div>
-              <div className="announcement-message">
+              <div className="announcement-message assignment-grades">
                 {announcement.title?announcement.title:<>"Nothing"</>}
               </div>
             </div>
@@ -80,14 +79,18 @@ console.log(announcements)
         <>Unapproved</>
         }
       </div>
-      <Modal show = {showAnnouncement} onHide={() => setShowAnnouncement(false)}>
+      <Modal show = {showAnnouncement} onHide={() => setShowAnnouncement(false)} id={`modal-${theme}`} size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
         <Modal.Header closeButton>
           <Modal.Title>Announcement</Modal.Title>
         </Modal.Header>
           <Modal.Body>
-            <div>
-              <div>{announcementDetails?.name}</div>
-              <div>{announcementDetails?.email}</div>
+            <div className='announcement-details'>
+              <div className="announcement-header">
+                <div>{announcementDetails?.name}</div>
+                <div>{announcementDetails?.email}</div>
+              </div>
               <div>{announcementDetails?.message}</div>
             </div>
           </Modal.Body>
@@ -99,6 +102,7 @@ console.log(announcements)
 
 
 function AnnouncemnetPoster ({showNewPost,setShowNewPost,newAnnouncement,setNewAnnouncement,user,courseName}) {
+  const {theme} = useContext(ThemeContext)
   const [success,setSuccess] = useState(null)
   const [isLoading,setLoading] = useState(false)
   
@@ -130,7 +134,9 @@ function AnnouncemnetPoster ({showNewPost,setShowNewPost,newAnnouncement,setNewA
 
   return(
     <div>
-      <Modal show = {showNewPost} onHide={() => setShowNewPost(false)}>
+      <Modal show = {showNewPost} onHide={() => setShowNewPost(false)} id={`modal-${theme}`} size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
         <Modal.Header closeButton>
           <Modal.Title>Announcement</Modal.Title>
         </Modal.Header>

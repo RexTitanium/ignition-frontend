@@ -44,7 +44,7 @@ function Dashboard({announcements,user,graduateDegreeData,setCourseData}) {
         const month = new Date(d.dueDate).getMonth()
         const day = new Date(d.dueDate).getDate()
         for (const card of graduateDegreeData) {
-          if (card.courseID == d.courseID) {
+          if (card.courseID === d.courseID) {
             events.push({
               courseCode: card.courseCode,
               id:d._id,
@@ -65,17 +65,14 @@ useEffect(() => {
   let childs = Array(document.getElementById("mainList").children)
   // let childs = []
   // for(let i = 0; i < )
-  console.log(childs);
   setOriginalCourses(childs[0])
 }, [])
 
 function checkUrl ()
 {
   const curUrl = window.location.pathname
-  console.log(curUrl)
   if(curUrl === "/")
   {
-    console.log("heejkhnsjkdhnfsjkdfnksjdnfjkn")  
     return false
   }
   return true
@@ -89,7 +86,6 @@ function removeAllChildNodes(parent) {
 function handleClick(val)
 {
   const elem = document.getElementById("mainList")
-  console.log(originalCourses);
   // const newElem = document.createElement("div")
   let childs = []
   // childs = originalCourses.filter((elem)=>{
@@ -109,7 +105,6 @@ function handleClick(val)
       childs.push(originalCourses[i])
     }
   }
-  console.log(childs,originalCourses);
   removeAllChildNodes(document.getElementById("mainList"))
   childs.map((elem)=>{
     document.getElementById("mainList").appendChild(elem)
@@ -179,11 +174,11 @@ function handleClick(val)
           <div><NotifBox notif={ann}/></div>
           )})}</div>
         </div>
-        <div className='subject-cards'>
-          {graduateDegreeData.map((subject)=> {
+        <div className='subject-cards' id="mainList">
+          {graduateDegreeData.map((subject,idx)=> {
             return(
-              <div className={`card-link-${theme}`}>
-                <Link className='subject-card-link' to={`/dashboard/${subject.courseCode}`}>
+              <div className={`card-link-${theme}`} id = {"mainListitem"+idx}>
+                <Link className='subject-card-link' to={subject.courseCode}>
                   <RenderSubjectCard subject={subject} theme={theme}/>
                 </Link>
               </div>);
@@ -198,7 +193,7 @@ function handleClick(val)
 
 function RenderSubjectCard({subject,theme}) {
   return(
-    <div className='subject-card-container  '>
+    <div className='subject-card-container' id={subject.courseCode}>
       <div className={`subject-card-wrapper card-${theme}`}>
         <div className={`subject-card-header card-header-${theme}`}>
           <div className='subject-name'>{subject.courseName} ({subject.courseCode})</div>

@@ -20,13 +20,12 @@ const Grades = ({user,assignments,assignmentSubmissions,cardData}) => {
     }
   }
   const [showGradingTool, setShowGradingTool] = useState('')
-  console.log(userSubmissions)
   function calculateGrade(assignments,marks) {
     let my_marks = 0
     let highest_marks= 0
     assignments.map((assignment,id) => {
       if (marks[id]){
-        if (marks[id].marks != -1) {
+        if (marks[id].marks !== -1) {
         my_marks += (marks[id].marks)
         highest_marks += (assignment.maxMarks)
       }}
@@ -35,7 +34,6 @@ const Grades = ({user,assignments,assignmentSubmissions,cardData}) => {
         highest_marks += (assignment.maxMarks)
       }}
     })
-    console.log(assignments,marks)
     let percentage = (my_marks/highest_marks)*100
     let letterGrade = 'F';
     let color = 'red'
@@ -103,14 +101,14 @@ const Grades = ({user,assignments,assignmentSubmissions,cardData}) => {
       <div className={`canvas-header canvas-header-${theme}`}>
         <div className="ind-assignment-header">
           <h1>Grades</h1>
-          {user.type == 'Student' ? <div><h1>Grade:</h1>
+          {user.type === 'Student' ? <div><h1>Grade:</h1>
             <h1 style={{color: grade[2]}}> {grade[1].toFixed(2)}% [{grade[0]}] </h1>
           </div>:<></>}
         </div>
       </div>
       {
         showGradingTool === '' ? 
-        user.type == 'Student' ?
+        user.type === 'Student' ?
         <div className='grades-container'>
           <div className='assignment-list-container'>
             {assignments.map((assignment) => {
@@ -124,7 +122,7 @@ const Grades = ({user,assignments,assignmentSubmissions,cardData}) => {
         </div>
         
         : 
-        user.type == "Instructor" ? 
+        user.type === "Instructor" ? 
         <div className='grades-container'>
           <div className='assignment-list-container'>
           {assignments.map((assignment) => {
@@ -145,7 +143,7 @@ const Grades = ({user,assignments,assignmentSubmissions,cardData}) => {
 const AssignmentCard = ({user, assignment,submissions, setShowGradingTool}) => {
   const {theme} = useContext(ThemeContext)
   const handleClick = (type,id) => {
-    setShowGradingTool(type == 'Instructor' ? id : "")
+    setShowGradingTool(type === 'Instructor' ? id : "")
   }
   return(
     <div className={`assignment-list-wrapper subcard-${theme}`} onClick={() => handleClick(user.type,assignment.assignmentId)}>
@@ -153,7 +151,7 @@ const AssignmentCard = ({user, assignment,submissions, setShowGradingTool}) => {
         {assignment.title}
       </div>
         <div>
-            {user.type == 'Student' ? submissions?
+            {user.type === 'Student' ? submissions?
             submissions.marks === -1 ?
               <div>
                 Not yet graded/{assignment.maxMarks}
@@ -166,7 +164,7 @@ const AssignmentCard = ({user, assignment,submissions, setShowGradingTool}) => {
                 Not Submitted
               </div>
               :
-              user.type == 'Instructor' ? 
+              user.type === 'Instructor' ? 
                 Date.now() < assignment.dueDate ?
                 <div>
                   Not yet Submitted
@@ -229,19 +227,19 @@ const GradeCard = ({assignment, submissions,setShowGradingTool}) => {
       <button className={`back-btn-${theme}`} onClick={() => setShowGradingTool('')}><ArrowBackRoundedIcon /></button>
 
       <div className='assignment-view-container'>
-          <div className={`submission-header submission-header-${theme}`}>{assignment.title} - Submissions</div>
+          <div className={`submission-header subheader-${theme}`}>{assignment.title} - Submissions</div>
       {
         submissions?.map((submission) => {
           return(
             <div className='assignment-view-wrapper' onClick={() => handleClick({submission})}>
-              <div className='assignment-submission-view'>
-                <div className={`submit-user-info grade-card-${theme}`}>
+              <div className={`assignment-submission-view  subcard-${theme}`}>
+                <div className='submit-user-info'>
                   <div className="submit-user">{submission.user}</div>
                   <div className="submit-time">Submitted at: {submission.time.toLocaleString()}</div>
                 </div>
-                <div className={`assignment-grades grades-${theme}`}>
+                <div className='assignment-grades'>
                 <div>
-                {submission.marks != -1 ? 
+                {submission.marks !== -1 ? 
                   <div>
                     {submission.marks}/{assignment.maxMarks}
                   </div> 
@@ -257,7 +255,9 @@ const GradeCard = ({assignment, submissions,setShowGradingTool}) => {
         })
       }
       </div>
-      <Modal show={showTool} onHide={() => setShowTool(false)}>
+      <Modal show={showTool} onHide={() => setShowTool(false)} id={`modal-${theme}`} size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
         <Modal.Header closeButton>
           <Modal.Title>Grade Tool</Modal.Title>
         </Modal.Header>
@@ -300,7 +300,7 @@ function calculateMeanMarks (assignment,sub) {
     let highest_marks = 0
     sub.map((mark) => {
       if (mark) {
-        if (mark.marks != -1) {
+        if (mark.marks !== -1) {
           submission_marks += (mark.marks)
           highest_marks += (assignment.maxMarks)
         }}

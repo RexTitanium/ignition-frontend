@@ -1,7 +1,5 @@
-import { ConstructionOutlined } from '@mui/icons-material'
 import * as ActionTypes from './ActionTypes'
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
-import { getDefaultNormalizer } from '@testing-library/react'
+import { configureStore} from '@reduxjs/toolkit'
 import axios from 'axios';
 import BASE_URL from '../shared/baseURL';
 
@@ -13,7 +11,6 @@ const initialState = {
 const reducer = (state = initialState, action) => { 
   switch (action.type) {
     case ActionTypes.REGISTER:
-      console.log(action.payload.email);
       axios.post(`${BASE_URL}/api/users/register`, 
         {
           email: `${action.payload.email}`, 
@@ -43,7 +40,6 @@ const reducer = (state = initialState, action) => {
       }
 
     case ActionTypes.CHANGE_PASSWORD:
-      console.log(action.payload);
       axios.patch(`${BASE_URL}/api/users/update/password`, 
         {
           email: `${action.payload.email}`, 

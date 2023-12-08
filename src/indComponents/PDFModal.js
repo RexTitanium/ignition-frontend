@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Modal from 'react-bootstrap/Modal'
+import ThemeContext from '../context/ThemeContext'
 
 const PDFModal = ({pdfURL,showLink,setShowLink}) => {
+  const {theme} = useContext(ThemeContext)
   return (
     <div>
-        <Modal className="modal-pdf-viewer" show={showLink} onHide={() => setShowLink(false)}>
-          <Modal.Header closeButton>
+        <Modal className="modal-pdf-viewer" show={showLink} onHide={() => setShowLink(false)} id={`modal-${theme}`} size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+          <Modal.Header closeButton >
               <Modal.Title>PDF Viewer</Modal.Title>
           </Modal.Header>
           <Modal.Body>

@@ -15,22 +15,6 @@
     flex-direction: row;
     justify-content: space-between;
 }
-
-.subcard-light {
-    padding: 10px;
-    background-color: #eeeeeeb6;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.subcard-dark {
-    padding: 10px;
-    background-color: #3d3d3d;
-    border-radius: 10px;
-    cursor: pointer;
-    color: white;
-}
-
 .assignment-list-title {
     display: flex;
     flex-direction: row;
@@ -122,9 +106,9 @@ input::file-selector-button:hover{
 .assignment-submission-view {
     display: flex;
     flex-direction: column;
-    background: #eeeeee;
     overflow: hidden;
     border-radius: 10px;
+    padding: 0px !important;
 }
 
 .submit-user-info {
@@ -136,7 +120,6 @@ input::file-selector-button:hover{
 .submission-header {
     font-size: 25px;
     margin-top: 20px;
-    background: #f6f6f6;
     box-shadow: 10px 10px 30px rgba(108, 108, 108, 0.092)  inset;
     padding: 10px;
     border-radius: 10px;
@@ -208,3 +191,22 @@ input::file-selector-button:hover{
     width: 100%;
 }
 
+
+.subheader-light {
+    background: #f6f6f6;
+}
+
+.subheader-dark {
+    background: #212121;
+    color: white;
+}
+
+.subcard-light .submit-user-info{
+    background-color: #eeeeee;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.subcard-dark .submit-user-info{
+    background-color: #333333;
+    border-bottom: 1px solid #262626;
+}

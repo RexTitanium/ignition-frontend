@@ -34,7 +34,6 @@ const People = ({card}) => {
           let parsedPeople = []
           for (const index in parseEnrollment) {
             const enrollment = parseEnrollment[index]?.enrollment
-            console.log(enrollment)
             if (enrollment?.courseID === card?.courseID) {
               let person = await axios.post(`${BASE_URL}/api/users/find`, {
                   email: enrollment?.userID
@@ -59,8 +58,7 @@ const People = ({card}) => {
     };
     fetchData();
   }, []);
-
-  console.log(people)
+  
   return (
     <div className={`canvas-content content-${theme}`}>
       <div className={`canvas-header canvas-header-${theme}`}>

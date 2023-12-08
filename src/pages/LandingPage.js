@@ -1,15 +1,16 @@
 import React, { useContext, useState } from "react";
 import { Button } from "@mui/material";
 import "./styles/Landing.css"; // Make sure the path is correct
-import { Link, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import Switch from '@mui/material/Switch'; // Import the Switch component
 import LoginFormContext from "../context/Login-Form-Context";
+import ThemeContext from "../context/ThemeContext";
 
 const LandingPage = () => {
 
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate() 
-  const [theme,setTheme] = useState('light')
+  const {theme} = useContext(ThemeContext)
 
   const toggle = () => {
     document.body.style.backgroundColor = theme==='light'?'#fff':'#000'

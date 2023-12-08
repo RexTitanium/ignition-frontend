@@ -1,30 +1,22 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useContext} from 'react'
 import Login from '../components/Login';
 import Register from '../components/Register';
 import ThemeContext from '../context/ThemeContext';
 import LoginFormContext from '../context/Login-Form-Context';
 import Loading from '../components/Loading';
+import Success from '../components/Success';
 
 function LoginPage({users,setLoggedInUser}) {
     const {formType, setFormType} = useContext(LoginFormContext);
-    const {theme} = useContext(ThemeContext)
-    const [isLoading, setLoading] = useState(true) 
-    const [timerCount, setTimerCount] = useState(2)
+    const {theme} = useContext(ThemeContext)   
+    const [isLoading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(null)
 
-    useEffect(() => {
-        let interval = setInterval(() => {
-            setTimerCount((lastTimerCount) => {
-                lastTimerCount <=1 && clearInterval(interval);
-                if (lastTimerCount <=1) setLoading(false);
-                if (lastTimerCount <=0) return lastTimerCount;
-                return lastTimerCount -1
-            });
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [isLoading]);
   return (
     <div className='login-container'>
+        {isLoading ? <Loading />
+        :
+        success=== null ?
         
         <div className={`${formType}-component`}>
             {isLoading ? <div className='loader'> <Loading /> </div>:
@@ -36,11 +28,12 @@ function LoginPage({users,setLoggedInUser}) {
                 </div>
                 <div className={`login-form login-form-${theme}`}>
                     <div className='form-type'>
-                        {formType === "sign-in" ? <Login setLoggedInUser={setLoggedInUser}/> : <Register users={users}/>}
+                        {formType === "sign-in" ? <Login setLoggedInUser={setLoggedInUser} setLoading={setLoading} setSuccess={setSuccess}/> : <Register users={users} setLoading={setLoading} setSuccess={setSuccess}/>}
                     </div>
                 </div>
             </div>}
         </div>
+        : <Success success={success} />}
     </div>
   )
 }

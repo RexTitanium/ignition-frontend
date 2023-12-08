@@ -7,7 +7,7 @@
 }
 
 .announcement-wrapper {
-    padding: 10px;
+    padding: 0px !important;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -18,6 +18,11 @@
     background-color: #e0e0e0;
 }
 
+.announcement-details {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
 
 .canvas-post-dark textarea {
     background-color: #272727;

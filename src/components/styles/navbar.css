@@ -126,3 +126,9 @@
 .dropdown-list-dark a:hover {
     background-color: #232323;
 }
+
+.course-code-div {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}

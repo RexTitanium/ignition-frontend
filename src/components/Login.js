@@ -13,7 +13,7 @@ import BASE_URL from '../shared/baseURL';
 import { GoogleLogin} from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 
-function Login({setLoggedInUser}) {
+function Login({setLoggedInUser,setLoading,setSuccess}) {
     const [togglePass, setTogglePass] = useState(false);
     const [errorMessages, setErrorMessages] = useState({});
     const [email,setEmail] = useState("");
@@ -39,6 +39,7 @@ function Login({setLoggedInUser}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setLoading(true)
         axios.post(`${BASE_URL}/api/users/login`, 
         {
           email: email, 
@@ -51,23 +52,30 @@ function Login({setLoggedInUser}) {
                 type: 'LOGIN',
                 payload
             })
-            alert('Success')
-            setLoggedInUser(payload)
-            localStorage.setItem('jsonwebtoken',JSON.stringify(payload))
-            navigate(payload?.type === 'Admin'?'/admindashboard':'/dashboard')
+            setLoading(false)
+            setSuccess(true)
+            setTimeout (() => {
+                setSuccess(null)
+                setLoggedInUser(payload)
+                localStorage.setItem('jsonwebtoken',JSON.stringify(payload))
+                navigate(payload?.type === 'Admin'?'/admindashboard':'/dashboard')
+            },2000)
         }, (error) => {
             if(error.response.data.message === "Invalid Password")
             {
                 setErrorMessages({ name: "pass", message: error.response.data.message });
+                setLoading(false)
             }
             else if(error.response.data.message === "Email Not Found")
             {
                 setErrorMessages({ name: "email", message: error.response.data.message });
+                setLoading(false)
             }
             else
             {
                 setErrorMessages({});
                 console.log(error);
+                setLoading(false)
             }
         });
     };
@@ -77,6 +85,7 @@ function Login({setLoggedInUser}) {
     }
     
     const handleGoogleOAuth = (data) => {
+        setLoading(true)
         axios.post(`${BASE_URL}/api/users/login`, 
         {
           email: data.email, 
@@ -85,28 +94,34 @@ function Login({setLoggedInUser}) {
             setErrorMessages({});
             const data = response.data.user;
             const payload = {email:data.email, fname:data.given_name, lname:data.family_name, type:'Unapproved'}
-            console.log('frontEmail', data.email);
             dispatch({
                 type: 'LOGIN',
                 payload
             })
-            alert('Success')
-            setLoggedInUser(payload)
-            localStorage.setItem('jsonwebtoken',JSON.stringify(payload))
-            navigate(payload?.type === 'Admin'?'/admindashboard':'/dashboard')
+            setLoading(false)
+            setSuccess(true)
+            setTimeout (() => {
+                setSuccess(null)
+                setLoggedInUser(payload)
+                localStorage.setItem('jsonwebtoken',JSON.stringify(payload))
+                navigate(payload?.type === 'Admin'?'/admindashboard':'/dashboard')
+            },2000)
         }, (error) => {
             if(error.response.data.message === "Invalid Password")
             {
                 setErrorMessages({ name: "pass", message: error.response.data.message });
+                setLoading(false)
             }
             else if(error.response.data.message === "Email Not Found")
             {
                 setErrorMessages({ name: "email", message: error.response.data.message });
+                setLoading(false)
             }
             else
             {
                 setErrorMessages({});
                 console.log(error);
+                setLoading(false)
             }
         });
     }

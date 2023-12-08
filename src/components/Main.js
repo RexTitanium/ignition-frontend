@@ -10,8 +10,6 @@ import IndCard from './IndCard'
 import Navbar from './Navbar'
 import AdminDashboard from './AdminDashboard'
 import AdminRoute from '../routeController/AdminRoute'
-import LockedRoute from '../routeController/LockedRoute'
-import ProfilePage from '../pages/ProfilePage'
 import axios from 'axios';
 import BASE_URL from '../shared/baseURL';
 import NotFound from './NotFound'
@@ -25,18 +23,6 @@ document.body.style.transition = "all 300ms ease";
 const users = useSelector(state => state.users)
 const dispatch = useDispatch()
 const [loggedInUser, setLoggedInUser] = useState()
-// const [courseData, setCourseData] = useState([
-//   { courseID: "656e8941a99804b1e0952de8",
-//     courseCode: 'CSCI B-505', 
-//     courseName: 'Applied Algorithms',  
-//     professorName: 'Dr. Smith',
-//     description: '',
-//   },
-//   { courseCode: 'CSCI B-551', courseName: 'Artificial Intelligence', semester: 'Fall 2023', percentage: 89.7, professorName: 'Dr. Williams', letterGrade: 'B-plus'
-//   },
-//   { courseCode: 'CSCI P-506', courseName: 'Advanced Statistics', semester: 'Fall 2023', percentage: 55.7, professorName: 'Dr. Evans', letterGrade: 'F'
-//   }
-// ]);
 const [courseData, setCourseData] = useState([])
 
 
@@ -46,7 +32,6 @@ useEffect(() => {
     try {
         let enrolledCourseResponse = await axios.get(`${BASE_URL}/enrollments/${loggedInUser.email}`);
         enrolledCourseResponse = enrolledCourseResponse.data;
-        console.log(enrolledCourseResponse)
         let parsedEnrollments =[]
         enrolledCourseResponse.map(async(enrollment) => 
         {
@@ -69,7 +54,6 @@ useEffect(() => {
   fetchData();
 }, [])
 
-console.log(courseData)
 const payload = JSON.parse(localStorage.getItem('jsonwebtoken'))
 if (payload && !loggedInUser){ 
   dispatch({
@@ -128,7 +112,6 @@ useEffect(() => {
     try {
         let assignmentResponse = await axios.get(`${BASE_URL}/assignments`);
         assignmentResponse = assignmentResponse.data;
-        console.log(assignmentResponse)
         let parsedAssignments =[]
         assignmentResponse.map(async(assignment) => 
         {
@@ -186,7 +169,6 @@ useEffect(() => {
             }
           )
         }
-        console.log(parsedSubmissions)
       setAssignmentSubmissions(parsedSubmissions);
     } catch (error) {
       console.error('Error fetching assignments:', error);
@@ -211,7 +193,6 @@ const CardId = () => {
       for (const submission in assignmentSubmissions) {
         if(submission.assignmentId) {
           let course = await axios.get(`${BASE_URL}/course/courseInfo/id/${submission.assignmentId}`);
-          console.log(course)
           if (course.data.course.courseCode === id) {
             parsedSubmissions.push(submission)
           }
@@ -257,10 +238,10 @@ return (
           <Route path="dashboard" element={<Dashboard announcements={announcements} user={loggedInUser} graduateDegreeData={courseData} setCourseData = {setCourseData}/>}/>
           <Route path="/dashboard/:cardId/*" element={<CardId />} />
         </Route>
-        <Route element={<LockedRoute user={loggedInUser}/>}>
+        {/* <Route element={<LockedRoute user={loggedInUser}/>}>
           <Route path='profile' element={<ProfilePage user={loggedInUser}/>}/>
-        </Route>
-        <Route path='*' element={loggedInUser?<Outlet />:<Navigate replace to ="/login"/>}/>
+        </Route> */}
+        <Route path='*' element={loggedInUser?<NotFound />:<Navigate replace to ="/login"/>}/>
       </Routes>
     </div>
   )

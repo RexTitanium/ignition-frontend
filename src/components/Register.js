@@ -5,7 +5,7 @@ import ThemeContext from '../context/ThemeContext';
 import { GoogleLogin} from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 
-function Register({users}) {
+function Register({users,setLoading,setSuccess}) {
     const [errorMessages, setErrorMessages] = useState({});
     const [fname,setFname] = useState("");
     const [lname,setLname] = useState("");

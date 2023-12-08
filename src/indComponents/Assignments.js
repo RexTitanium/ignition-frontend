@@ -76,7 +76,6 @@ const Assignments = ({card, loggedInuser,ass,assignmentSubmissions}) => {
       setSuccess(null)},
       5000)
   }
-  console.log(newAssignment)
   return (
     <div className={`canvas-content content-${theme}`}>
       <Routes>
@@ -84,10 +83,12 @@ const Assignments = ({card, loggedInuser,ass,assignmentSubmissions}) => {
           <div>
         <div className={`canvas-header canvas-header-${theme} canvas-assignment-header`}>
           <h1>Assignment</h1>
-          {user.type == "Instructor" ? 
+          {user.type === "Instructor" ? 
           <div className='create-assignment'>
             <button className={`create-btn create-btn-${theme}`} onClick={() => setShowModal(true)}>Create New Assignment</button>
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal show={showModal} onHide={() => setShowModal(false)} id={`modal-${theme}`} size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
               <Modal.Header closeButton>
                 <Modal.Title>Create Assignment</Modal.Title>
               </Modal.Header>
@@ -142,7 +143,7 @@ const Assignments = ({card, loggedInuser,ass,assignmentSubmissions}) => {
         : <></>}
         </div>
         <div>
-        {user.type == "Student" || user.type == 'Instructor' ? 
+        {user.type === "Student" || user.type === 'Instructor' ? 
         <div className='assignment-list-container'>
           {assignments?.map((assignment) => {
             return(<div onClick={() => setShowAssignment(assignment)}>
@@ -215,9 +216,8 @@ const IndividualAssigment = ({card,user,assignment,submissions,setShowAssignment
     },(error) => {
       console.log(error)
     })
-    console.log(fileURL)
     // Details of the uploaded file
-    console.log(assignment)
+
     await axios.post(`${BASE_URL}/submissions`,{
       assignmentID:assignment.assignmentId,
       grade:-1,
@@ -246,8 +246,8 @@ const IndividualAssigment = ({card,user,assignment,submissions,setShowAssignment
       <div className={`canvas-header canvas-header-${theme}`}>
         <div className="ind-assignment-header">
           <h1>{assignment.title}</h1>
-          {user.type == 'Student' ? 
-            !userSubmission || userSubmission?.marks == -1 ? 
+          {user.type === 'Student' ? 
+            !userSubmission || userSubmission?.marks === -1 ? 
               <h1>Not Yet Graded</h1>
               : <h1>{userSubmission?.marks}/{assignment.maxMarks}</h1>
               :<></>
@@ -260,7 +260,7 @@ const IndividualAssigment = ({card,user,assignment,submissions,setShowAssignment
           <div className="assignment-description">{assignment.description}</div>
           <div className="assignment-file">{assignment.file? <a className="pdf-open-btn" href='#' onClick={() => handlePDFViewer(assignment?.file)}>{assignment.title} - File</a>:<></>}</div>
           </div>
-        {user.type == "Student" ?
+        {user.type === "Student" ?
         <div>
           {userSubmission?.link?
                 <div className={`submitted-link subcard-${theme}`}>
@@ -273,7 +273,7 @@ const IndividualAssigment = ({card,user,assignment,submissions,setShowAssignment
           isLoading ? <Loading />
           :
           success === null ?
-          <div className='assignment-upload-container'>
+          <div className={`assignment-upload-container subcard-${theme}`}>
           <div className='file-upload-btn'>
             <label> Upload file</label>
             <input type="file" onChange={(e) => setFile(e.target.files[0])}/>
@@ -290,13 +290,13 @@ const IndividualAssigment = ({card,user,assignment,submissions,setShowAssignment
         </div>
         
         : 
-        user.type == "Instructor" ? 
+        user.type === "Instructor" ? 
         <div className='assignment-view-container'>
-          <div className="submission-header">Submissions</div>
+          <div className={`submission-header subheader-${theme}`}>Submissions</div>
           {assignmentSubmissions?.map((submission,id) => {
             return(
               <div key={id} className='assignment-view-wrapper'>
-                <div className='assignment-submission-view'>
+                <div className={`assignment-submission-view subcard-${theme}`}>
                   <div className='submit-user-info'>
                     <div className="submit-user">{submission.user}</div>
                     <div className="submit-time">{submission.time.toLocaleString()}</div>
